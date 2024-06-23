@@ -1,10 +1,14 @@
 package configs
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+	"gitlab.wizmacau.com/jack/proxypool/pkg/logger"
+)
 
 type Configs struct {
-	Db        Db        `json:"db"`
-	KuaiDaiLi KuaiDaiLi `json:"kuaidaili"`
+	Db        Db            `json:"db"`
+	KuaiDaiLi KuaiDaiLi     `json:"kuaidaili"`
+	Logger    logger.Config `json:"logger"`
 }
 
 type Db struct {
@@ -24,6 +28,7 @@ func NewConfigs() (*Configs, error) {
 	viper.SetConfigType("json")
 
 	viper.SetDefault("kuaidaili.num", 1)
+	viper.SetDefault("logger.level", logger.ProductionLevel)
 
 	// Add paths where the configuration file could be located.
 	// The paths are checked in reverse order, with the last added path having the highest priority.

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 	"os/signal"
 	"sync"
@@ -17,7 +16,6 @@ func HandleSignals(stopFunction func()) {
 	signal.Notify(sigc, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-sigc
-		log.Println("service", "Received sigterm/sigint, stopping")
 		callback.Do(stopFunction)
 	}()
 }

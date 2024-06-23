@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gitlab.wizmacau.com/jack/proxypool/internal/server/handlers"
-	"log"
+	"gitlab.wizmacau.com/jack/proxypool/pkg/logger"
 	"net/http"
 	"strconv"
 	"time"
@@ -15,10 +15,13 @@ import (
 type HttpServer struct {
 	engine *gin.Engine
 	server *http.Server
+	logger logger.Logger
 }
 
-func NewHttpServer() (*HttpServer, error) {
-	s := &HttpServer{}
+func NewHttpServer(logger logger.Logger) (*HttpServer, error) {
+	s := &HttpServer{
+		logger: logger,
+	}
 	err := s.init()
 	if err != nil {
 		return nil, err
@@ -43,7 +46,7 @@ func (s *HttpServer) Run(ctx context.Context, port int) error {
 
 	go func() {
 		if err := s.server.ListenAndServe(); err != nil && !errors.Is(http.ErrServerClosed, err) {
-			log.Fatalf("listen: %s\n", err)
+			s.logger.Error("server stopped", logger.String("error", err.Error()))
 		}
 	}()
 
@@ -53,7 +56,7 @@ func (s *HttpServer) Run(ctx context.Context, port int) error {
 
 func (s *HttpServer) Stop() {
 	if err := s.server.Shutdown(context.Background()); err != nil {
-		log.Fatal("server forced to shutdown:", err)
+		s.logger.Error("server forced to shutdown", logger.String("error", err.Error()))
 	}
-	log.Println("server stopped")
+	s.logger.Info("server stopped")
 }

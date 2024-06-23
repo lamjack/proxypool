@@ -9,12 +9,12 @@ import (
 )
 
 func main() {
-	_, err := configs.NewConfigs()
+	cfg, err := configs.NewConfigs()
 	if err != nil {
 		panic("failed to load configs: " + err.Error())
 	}
 
-	db, err := gorm.Open(sqlite.Open("/Users/jack/Desktop/proxypool.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(cfg.Db.Dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}

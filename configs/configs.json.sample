@@ -1,4 +1,7 @@
 {
+  "db": {
+    "dsn": "proxypool.db"
+  },
   "kuaidaili": {
     "secretId": "",
     "secretKey": "",

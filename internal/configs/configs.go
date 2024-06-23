@@ -3,7 +3,12 @@ package configs
 import "github.com/spf13/viper"
 
 type Configs struct {
+	Db        Db        `json:"db"`
 	KuaiDaiLi KuaiDaiLi `json:"kuaidaili"`
+}
+
+type Db struct {
+	Dsn string `json:"dsn"`
 }
 
 type KuaiDaiLi struct {

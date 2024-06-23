@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"gitlab.wizmacau.com/jack/proxypool/internal/configs"
 	"gitlab.wizmacau.com/jack/proxypool/internal/models"
 	"gitlab.wizmacau.com/jack/proxypool/internal/server"
@@ -24,10 +25,19 @@ func main() {
 		panic("failed to migrate")
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
+
 	httpServer, err := server.NewHttpServer()
 	if err != nil {
 		panic("failed to start http server: " + err.Error())
 	}
 
-	_ = httpServer.Run(8888)
+	HandleSignals(
+		func() {
+			httpServer.Stop()
+			cancel()
+		},
+	)
+
+	_ = httpServer.Run(ctx, 8888)
 }
